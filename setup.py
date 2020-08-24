@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = 'turtlebot3Controller'
+package_name = 'turtlebot3_controller'
 
 setup(
     name=package_name,
@@ -13,13 +13,14 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='pi',
-    maintainer_email='pi@todo.todo',
-    description='TODO: Package description',
+    maintainer='kchaiyo',
+    maintainer_email='90104050+kchaiyo@users.noreply.github.com',
+    description='Package for controlling tb3 by programming',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+		'turtlebot3_controller = turtlebot3_controller.turtlebot_controller:main'
         ],
     },
 )
