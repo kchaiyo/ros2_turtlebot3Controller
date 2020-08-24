@@ -62,16 +62,19 @@ def main(args=None):
     #rclpy.spin(tb3ControllerNode)
 
     ##Method 2: Sync the node's work with our looping code in main thread.
-    while rclpy.ok():
-        rclpy.spin_until_future_complete(tb3ControllerNode)
-        #read sensors values
-        print(tb3ControllerNode.valueBatteryState)
-        print(tb3ControllerNode.valueLaserRaw)
-        print(tb3ControllerNode.valueOdometry)
-        #calculate command movement
-        linearVelocity = 0.1 #m/s
-        angularVelocity = 0.05 #rad/s
-        tb3ControllerNode.publishVelocityCommand(linearVelocity,angularVelocity)
+    try:
+        while rclpy.ok():
+            rclpy.spin_until_future_complete(tb3ControllerNode)
+            #read sensors values
+            print(tb3ControllerNode.valueBatteryState)
+            print(tb3ControllerNode.valueLaserRaw)
+            print(tb3ControllerNode.valueOdometry)
+            #calculate command movement
+            linearVelocity = 0.1 #m/s
+            angularVelocity = 0.05 #rad/s
+            tb3ControllerNode.publishVelocityCommand(linearVelocity,angularVelocity)
+    except KeyboardInterrupt:
+        tb3ControllerNode.publishVelocityCommand(0.0,0.0)
 
     tb3ControllerNode.destroy_node()
     rclpy.shutdown()
