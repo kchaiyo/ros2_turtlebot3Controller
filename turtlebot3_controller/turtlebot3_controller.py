@@ -12,7 +12,6 @@ class Turtlebot3Controller(Node):
 
     def __init__(self):
         super().__init__('turtlebot3_controller')   #node name
-        #TODO: on shutdown?
         self.cmdVelPublisher = self.create_publisher(Twist, 'cmd_vel', 1)
         self.scanSubscriber = self.create_subscription(LaserScan, 'scan', self.scanCallback, 1)
         self.batteryStateSubscriber = self.create_subscription(BatteryState, 'battery_state', self.batteryStateCallback, 1)
@@ -29,6 +28,9 @@ class Turtlebot3Controller(Node):
             'linearVelocity':None,  #Datatype: geometry_msg/Vector3 (x,y,z)
             'angularVelocity':None, #Datatype: geometry_msg/Vector3 (x,y,z)
         }
+
+        #Use this timer for the job that should be looping until interrupted
+        self.timer = self.create_timer(0.1,self.timerCallback)
 
     def publishVelocityCommand(self, linearVelocity, angularVelocity):
         msg = Twist()
@@ -54,28 +56,28 @@ class Turtlebot3Controller(Node):
             'linearVelocity':msg.twist.twist.linear,
             'angularVelocity':msg.twist.twist.angular,
         }
+    def timerCallback(self):
+        print('timer triggered')
+        ##read sensors values
+        #print(tb3ControllerNode.valueBatteryState)
+        #print(tb3ControllerNode.valueLaserRaw)
+        #print(tb3ControllerNode.valueOdometry)
+        ##calculate command movement
+        #linearVelocity = 0.1 #m/s
+        #angularVelocity = 0.05 #rad/s
+        #tb3ControllerNode.publishVelocityCommand(linearVelocity,angularVelocity)
+
 def main(args=None):
     rclpy.init(args=args)
     tb3ControllerNode = Turtlebot3Controller()
-    ##Method 1: Setups the callbacks then block the main thread.
-    #setup callbacks
-    #rclpy.spin(tb3ControllerNode)
+    print('tb3ControllerNode created')
 
-    ##Method 2: Sync the node's work with our looping code in main thread.
-    try:
-        while rclpy.ok():
-            rclpy.spin_until_future_complete(tb3ControllerNode)
-            #read sensors values
-            print(tb3ControllerNode.valueBatteryState)
-            print(tb3ControllerNode.valueLaserRaw)
-            print(tb3ControllerNode.valueOdometry)
-            #calculate command movement
-            linearVelocity = 0.1 #m/s
-            angularVelocity = 0.05 #rad/s
-            tb3ControllerNode.publishVelocityCommand(linearVelocity,angularVelocity)
-    except KeyboardInterrupt:
-        tb3ControllerNode.publishVelocityCommand(0.0,0.0)
+    #Spin the node in the same thread if only callbacks are used
+    rclpy.spin(tb3ControllerNode)
 
+    #TODO: find method to spin the node asychronously, so that linear non-looped task can be programmed.
+
+    tb3ControllerNode.publishVelocityCommand(0.0,0.0)
     tb3ControllerNode.destroy_node()
     rclpy.shutdown()
 
