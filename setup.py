@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-		'turtlebot3_controller = turtlebot3_controller.turtlebot_controller:main'
+		'controller = turtlebot3_controller.turtlebot3_controller:main'
         ],
     },
 )
