@@ -2,6 +2,7 @@
 
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import qos_profile_sensor_data
 
 from sensor_msgs.msg import LaserScan, BatteryState
 from geometry_msgs.msg import Twist
@@ -13,7 +14,7 @@ class Turtlebot3Controller(Node):
     def __init__(self):
         super().__init__('turtlebot3_controller')   #node name
         self.cmdVelPublisher = self.create_publisher(Twist, 'cmd_vel', 1)
-        self.scanSubscriber = self.create_subscription(LaserScan, 'scan', self.scanCallback, 1)
+        self.scanSubscriber = self.create_subscription(LaserScan, 'scan', self.scanCallback, qos_profile=qos_profile_sensor_data)
         self.batteryStateSubscriber = self.create_subscription(BatteryState, 'battery_state', self.batteryStateCallback, 1)
         self.odomSubscriber = self.create_subscription(Odometry, 'odom', self.odomCallback, 1)
         self.valueLaserRaw = {
