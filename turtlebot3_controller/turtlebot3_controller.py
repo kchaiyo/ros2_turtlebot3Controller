@@ -67,18 +67,28 @@ class Turtlebot3Controller(Node):
         angularVelocity = 0.05 #rad/s
         self.publishVelocityCommand(linearVelocity,angularVelocity)
 
+def robotStop():
+    node = rclpy.create_node('tb3Stop')
+    publisher = node.create_publisher(Twist, 'cmd_vel', 1)
+    msg = Twist()
+    msg.linear.x = 0.0
+    msg.angular.z = 0.0
+    publisher.publish(msg)
+
 def main(args=None):
     rclpy.init(args=args)
     tb3ControllerNode = Turtlebot3Controller()
     print('tb3ControllerNode created')
+    try:
+        #Spin the node in the same thread if only callbacks are used
+        rclpy.spin(tb3ControllerNode)
 
-    #Spin the node in the same thread if only callbacks are used
-    rclpy.spin(tb3ControllerNode)
-
-    #TODO: find method to spin the node asychronously, so that linear non-looped task can be programmed.
-
+       #TODO: find method to spin the node asychronously, so that linear non-looped task can be programmed.
+    except KeyboardInterrupt:
+       pass
     tb3ControllerNode.publishVelocityCommand(0.0,0.0)
     tb3ControllerNode.destroy_node()
+    robotStop()
     rclpy.shutdown()
 
 if __name__ == '__main__':
