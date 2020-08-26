@@ -58,14 +58,14 @@ class Turtlebot3Controller(Node):
         }
     def timerCallback(self):
         print('timer triggered')
-        ##read sensors values
-        #print(tb3ControllerNode.valueBatteryState)
-        #print(tb3ControllerNode.valueLaserRaw)
-        #print(tb3ControllerNode.valueOdometry)
-        ##calculate command movement
-        #linearVelocity = 0.1 #m/s
-        #angularVelocity = 0.05 #rad/s
-        #tb3ControllerNode.publishVelocityCommand(linearVelocity,angularVelocity)
+        #read sensors values
+        print(self.valueBatteryState)
+        print(self.valueLaserRaw)
+        print(self.valueOdometry)
+        #calculate command movement
+        linearVelocity = 0.1 #m/s
+        angularVelocity = 0.05 #rad/s
+        self.publishVelocityCommand(linearVelocity,angularVelocity)
 
 def main(args=None):
     rclpy.init(args=args)
